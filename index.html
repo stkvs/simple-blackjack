@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Simple Program Task</title>
+</head>
+<body>
+    <div class="text">
+        <h2>Simple Blackjack</h2>
+    </div>
+
+    <div class="dealer-container"></div>
+    <div class="player-container"></div>
+    <div class="counter" id="player"></div>
+
+    <div class="buttons">
+        <button id="hit">Hit</button>
+        <button id="stand">Stand</button>
+        <button id="deal">Deal</button>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            margin-bottom: 32px;
+        }
+
+        .player-container, .dealer-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            height: 82px;
+        }
+
+        .dealer-container #card:nth-child(1) {
+            color: transparent;
+        }
+
+        .player-container::before {
+            content: "Player: ";
+            position: absolute;
+            transform: translateY(-55px);
+        }
+
+        .dealer-container::before {
+            content: "Dealer: ";
+            position: absolute;
+            transform: translateY(-55px);
+        }
+
+        #card {
+            width: 50px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
+            border-radius: 8px;
+        }
+
+        .modal {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            width: auto;
+            padding: 0 20px 0 20px;
+            height: 124px;
+            border: 1px solid black;
+            border-radius: 8px;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            z-index: +1;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: 1px solid black;
+            border-radius: 8px;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        let modal = document.createElement('div');
+        modal.classList.add('modal');
+        let player = 0;
+        let dealer = 0;
+
+        function dealCard(user) {
+            let card = Math.floor(Math.random() * 10) + 1;
+            document.querySelector(`.${user}-container`).innerHTML += `<div id="card">${card}</div>`;
+            return card;
+        }
+
+        function modalContent(message) {
+            modal.innerHTML = `<div class="modal-content">
+                <p>${message}</p>
+                <button id="close">Close</button>
+            </div>`;
+            document.body.appendChild(modal);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id == 'close') {
+                modal.innerHTML = '';
+                document.body.removeChild(modal);
+
+                restart();
+            }
+        });
+
+        function restart() {
+            player = 0;
+            dealer = 0;
+
+            document.querySelector('.player-container').innerHTML = '';
+            document.querySelector('.dealer-container').innerHTML = '';
+
+            for (let i = 0; i < 2; i++) {
+                player += dealCard('player');
+                dealer += dealCard('dealer');
+            }
+            document.querySelector('#player').innerHTML = `Count: ${player}`;
+        }
+
+        document.querySelector('#deal').addEventListener('click', () => {
+            restart()
+        });
+
+        document.querySelector('#hit').addEventListener('click', () => {
+            console.log("Hit")
+
+            player += dealCard('player');
+            document.querySelector('#player').innerHTML = `Count: ${player}`;
+            console.log(player)
+
+            if (player > 21) {
+                modalContent('Player Bust, Dealer Wins');
+
+            } else if (player == 21) {
+                modalContent('Player Blackjack, Player Wins');
+                document.querySelector('.dealer-container *').style.color = "black";
+            }
+        });
+
+        document.querySelector('#stand').addEventListener('click', () => {
+            console.log("Stand")
+
+            document.querySelector('.dealer-container *').style.color = "black";
+
+            while (dealer < player) {
+                dealer += dealCard('dealer');
+            }
+
+            if (dealer > 21) {
+                modalContent('Dealer Busts, Player Wins');
+                dealer = 0;
+            } else if (dealer == player) {
+                modalContent('Draw, No one wins');
+                player = 0;
+                dealer = 0;
+            } else if (dealer > player && dealer <= 21) {
+                modalContent('Dealer Wins');
+                player = 0;
+                dealer = 0;
+            }
+        });
+
+    </script>
+</body>
+</html>
