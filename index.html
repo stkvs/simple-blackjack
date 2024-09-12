@@ -100,8 +100,8 @@
 
         .modal-content {
             width: auto;
-            padding: 0 20px 0 20px;
-            height: 124px;
+            height: auto;
+            padding: 20px;
             border: 1px solid black;
             border-radius: 8px;
             justify-content: center;
@@ -153,6 +153,8 @@
         function modalContent(message) {
             modal.innerHTML = `<div class="modal-content">
                 <p>${message}</p>
+                <p>Player had: ${player}</p>
+                <p>Dealer had: ${dealer}</p>
                 <button id="close">Close</button>
             </div>`;
             document.body.appendChild(modal);
