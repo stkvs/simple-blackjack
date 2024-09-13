@@ -184,7 +184,7 @@
         }
 
         function addPoint(user, point) {
-            scoreElement.querySelector(`#${user}`).innerHTML = `${user.charAt(0).toUpperCase() + user.slice(1)}: ${playerScore += 1}`;
+            scoreElement.querySelector(`#${user}`).innerHTML = `${user.charAt(0).toUpperCase() + user.slice(1)}: ${playerScore += point}`;
         }
 
         document.querySelector('#deal').addEventListener('click', () => {
